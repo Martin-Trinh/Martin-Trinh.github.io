@@ -1,56 +1,60 @@
 import Position from "./Position.js";
-
-"use strict";
-
+import Enemy from "./Enemy.js";
 
 export default class Map{
-    constructor(canvas){
-        this.canvas = canvas;
-        this.path = [
-            new Position(0, 400),
-            new Position(400, 0),
-        ];
+    constructor(pathPoints){
+        this.canvas = document.getElementById('canvas');
         this.GRID_SIZE = 25;
+        this.widthTile = this.canvas.width / this.GRID_SIZE;
+        this.heightTile = this.canvas.height / this.GRID_SIZE;
+        this.path = [];
+        this.createPath(pathPoints);
+        this.enemies = [];
+        this.spawnStartEndPoint();
     }
-    addPath (path){
-        this.path.push(path);
+    spawnStartEndPoint(){
+        const offset = new Position(this.GRID_SIZE / 2, this.GRID_SIZE / 2);
+        let x = Math.floor(Math.random() * this.widthTile / 4);
+        let y = Math.floor(Math.random() * this.heightTile);
+        // generate random start point
+        const startPoint = new Position(x, y).multiply(this.GRID_SIZE).add(offset);
+        // add start point to path
+        this.path.splice(0, 0, startPoint);
+        x = (Math.floor(Math.random() * this.widthTile /4) + this.widthTile * 3/4);
+        y = Math.floor(Math.random() * this.heightTile);
+        // generate random end point
+        const endPoint = new Position(x, y).multiply(this.GRID_SIZE).add(offset);
+        // add end point to path
+        this.path.push(endPoint);
     }
-    renderPath(){
-        const ctx = this.canvas.getContext('2d');
-        let drawPos = new Position(50, 0);
-        ctx.fillStyle = 'blue';
-        this.path.forEach(vec => {
-            let x = drawPos.x - this.GRID_SIZE;
-            let y = drawPos.y - this.GRID_SIZE;
-            let w = vec.x + this.GRID_SIZE * 2;
-            let h = this.GRID_SIZE * 2;
-            if(vec.x == 0){
-                w = this.GRID_SIZE * 2;
-                h = vec.y + this.GRID_SIZE * 2;
-            }
-            ctx.fillRect(x, y, w, h);
-            drawPos.x += vec.x;
-            drawPos.y += vec.y;
+    addEnemy(speed, maxHealth){
+        this.enemies.push(new Enemy(speed, maxHealth, this.path));
+    }
+    createPath(pathPoints){
+        // create path from pathPoints
+        pathPoints.forEach(path => {
+            const offset = new Position(this.GRID_SIZE / 2, this.GRID_SIZE / 2);
+            this.path.push(new Position(path.x, path.y).multiply(this.GRID_SIZE).add(offset));
         });
     }
-    drawPath(){
-        const paths = [
-            new Position(12.5, 12.5),
-            new Position(0, 400),
-            new Position(600, 0),   
-        ]
+    renderStartEndPoint(){
+        const ctx = this.canvas.getContext('2d');
+        ctx.fillStyle = 'green';
+        const startPoint = this.path[0];
+        ctx.fillRect(startPoint.x - this.GRID_SIZE/2, startPoint.y - this.GRID_SIZE/2, this.GRID_SIZE, this.GRID_SIZE);
+        ctx.fillStyle = 'red';
+        const endPoint = this.path[this.path.length - 1];
+        ctx.fillRect(endPoint.x - this.GRID_SIZE/ 2, endPoint.y - this.GRID_SIZE/2, this.GRID_SIZE, this.GRID_SIZE);
+    }
+    renderPath(){
+        this.renderStartEndPoint();
         const ctx = this.canvas.getContext('2d');
         ctx.strokeStyle = 'blue';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        let drawPos = new Position(paths[0].x, paths[0].y);
-        ctx.moveTo(drawPos.x, drawPos.y);
-        for(let i = 1; i < paths.length; i++){
-            if(paths[i].x == 0)
-                drawPos.y += paths[i].y;
-            else
-                drawPos.x += paths[i].x;
-            ctx.lineTo(drawPos.x, drawPos.y);
+        ctx.moveTo(this.path[0].x, this.path[0].y);
+        for(let i = 1; i < this.path.length; i++){
+            ctx.lineTo(this.path[i].x, this.path[i].y);
             ctx.stroke();
         }
     }
@@ -71,4 +75,18 @@ export default class Map{
             ctx.stroke();
         }
     }
+    updateEnemies(){
+        // move enemies
+        this.enemies.forEach(enemy => {
+            enemy.move(this.canvas);
+        });
+        // remove enemies that reach the end point
+        this.enemies = this.enemies.filter(enemy => !enemy.pos.equal(this.path[this.path.length - 1]));
+        // render enemies
+        this.enemies.forEach(enemy => {
+            enemy.render(this.canvas);
+        });
+
+    }
+
 }

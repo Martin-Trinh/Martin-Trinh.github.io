@@ -1,13 +1,10 @@
 import Map from "./Map.js";
 
-"use strict";
-
 export default class Game{
-    constructor(){
+    constructor(pathPoints){
         this.canvas = document.getElementById('canvas');
-        this.enemies = []; 
-        this.map = new Map(canvas);
-        this.FPS = 60;
+        this.map = new Map(pathPoints);
+        this.FPS = 30;
         this.interval = 1000 / this.FPS;
         this.lastTime = 0;
         this.gameloop = this.gameloop.bind(this);
@@ -18,25 +15,24 @@ export default class Game{
         this.canvas.style.backgroundColor = 'gray';
         requestAnimationFrame(this.gameloop);
     }
-    addEnemy(enemy){
-        this.enemies.push(enemy);
+    addEnemy(speed, maxHealth){
+        this.map.addEnemy(speed, maxHealth);
     }
     update(){
-        // this.map.drawPath();
-        this.map.renderPath();
-        this.map.renderGrid();
-        // this.enemies.forEach(enemy => {
-        //     enemy.update(this.context);
-        // });
-
+        this.map.updateEnemies();
     }
     render(){
+        const ctx = this.canvas.getContext('2d');
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.map.renderPath();
+        this.map.renderGrid();
     }
     gameloop(timestamp){
         const deltaTime = timestamp - this.lastTime;
         if(deltaTime >= this.interval){
-            this.update();
+            // console.log("FPS:" + 1000 / deltaTime);
             this.render();
+            this.update();
             this.lastTime = timestamp;
         }
         requestAnimationFrame(this.gameloop);
