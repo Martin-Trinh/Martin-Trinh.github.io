@@ -23,4 +23,13 @@ export default class Position{
     distanceTo(other){
         return Math.sqrt((this.x - other.x)**2 + (this.y - other.y)**2);
     }
+    between(start, end){
+        if(this.x === start.x){
+            return this.y >= start.y && this.y <= end.y;
+        }
+        if(this.y === start.y){
+            return this.x >= start.x && this.x <= end.x;
+        }
+        return false;
+    }
 }

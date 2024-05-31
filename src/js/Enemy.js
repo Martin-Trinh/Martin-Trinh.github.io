@@ -1,9 +1,10 @@
 import Position from "./Position.js";
 
 export default class Enemy{
-    constructor(speed, maxHealth, path){
+    constructor(speed, maxHealth, path, coins){
         this.MIN_DIST_FROM_DEST = 3;
         this.speed = speed;
+        this.coins = coins;
         this.maxHealth = maxHealth;
         this.currentHealth = this.maxHealth;
         this.width = 10;
@@ -13,7 +14,7 @@ export default class Enemy{
         this.destination;
         this.paths = path;
         this.pathIndex = 0;
-        this.pos = new Position(this.paths[0].x, this.paths[0].y);
+        this.pos = new Position(path[0].x, path[0].y);
     }
     render(canvas){
         const ctx = canvas.getContext('2d');

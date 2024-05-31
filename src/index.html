@@ -1,17 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css" />
     <script type="module" src="js/main.js"></script>
-</head>
-<body>
+  </head>
+  <body>
+    <nav class="navigation">
+      <h1 class="heading" id="app-heading">Tower defense</h1>
+    </nav>
     <main id="game-container">
-        <canvas id="canvas" width="800" height="600">
-            
-        </canvas>
+      <aside class="sidebar">
+        <section id="game-info">
+          <div>
+            <h2>Score</h2>
+            <p id="score"></p>
+          </div>
+          <div>
+            <h2>Lives</h2>
+            <p id="lives"></p>
+          </div>
+          <div>
+            <h2>Money</h2>
+            <p id="money"></p>
+          </div>
+          <div>
+            <h2>Wave</h2>
+            <p id="wave-number"></p>
+          </div>
+        </section>
+        <section>
+            <div>
+                <div id="towers">
+                  <h2>Towers</h2>
+                  <div class="tower-box">
+                    <div class="tower" data-tower-type="basic" draggable="true"></div>
+                  </div>
+                  <div class="tower-box">
+                    <div
+                      class="tower"
+                      data-tower-type="archer"
+                      draggable="true"
+                    ></div>
+                  </div>
+                  <div class="tower-box">
+                    <div
+                      class="tower"
+                      data-tower-type="cannon"
+                      draggable="true"
+                    ></div>
+                  </div>
+                  <div class="tower-box">
+                    <div
+                      class="tower"
+                      data-tower-type="sniper"
+                      draggable="true"
+                    ></div>
+                  </div>
+                </div>
+                <div id="tower-info">
+                  <p id="tower-type"></p>
+                  <p id="tower-damage"></p>
+                  <p id="tower-range"></p>
+                  <p id="tower-speed"></p>
+                  <p id="tower-price"></p>
+                </div>
+            </div>
+          <div id="tower-tutorial">
+            <h2>Guide:</h2>
+            <p>Drag tower and place it to desired tile</p>
+            <p>Hover over the tower to see its stats</p>
+          </div>
+        </section>
+      </aside>
+      <canvas id="canvas" width="800" height="600"> </canvas>
+      <aside class="sidebar">
+        <button id="next-stage-btn">Next stage</button>
+        <button id="start-btn">Start</button>
+        <button id="reset-btn">Reset</button>
+        <button id="audio-btn">Audio</button>
+        <button id="sell-btn">Sell</button>
+        <button id="back-to-menu">Back to menu</button>
+      </aside>
     </main>
-</body>
+  </body>
 </html>

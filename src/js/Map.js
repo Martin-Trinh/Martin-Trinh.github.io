@@ -1,16 +1,18 @@
 import Position from "./Position.js";
 import Enemy from "./Enemy.js";
+import Tower from "./Tower.js";
 
 export default class Map{
     constructor(pathPoints){
         this.canvas = document.getElementById('canvas');
-        this.GRID_SIZE = 25;
+        this.GRID_SIZE = 50;
         this.widthTile = this.canvas.width / this.GRID_SIZE;
         this.heightTile = this.canvas.height / this.GRID_SIZE;
         this.path = [];
         this.createPath(pathPoints);
         this.enemies = [];
-        this.spawnStartEndPoint();
+        this.towers = [];
+        // this.spawnStartEndPoint();
     }
     spawnStartEndPoint(){
         const offset = new Position(this.GRID_SIZE / 2, this.GRID_SIZE / 2);
@@ -27,8 +29,8 @@ export default class Map{
         // add end point to path
         this.path.push(endPoint);
     }
-    addEnemy(speed, maxHealth){
-        this.enemies.push(new Enemy(speed, maxHealth, this.path));
+    addEnemy(speed, maxHealth,coins){
+        this.enemies.push(new Enemy(speed, maxHealth, this.path, coins));
     }
     createPath(pathPoints){
         // create path from pathPoints
@@ -88,5 +90,40 @@ export default class Map{
         });
 
     }
+    updateTowers(){
+        // this.towers.forEach(tower => {
+        //     tower.update();
+        // });
+        this.towers.forEach(tower => {
+            tower.render(canvas);
+        });
+    }
+    addTower({x, y}, {range, damage, speed, price, color}){
+        let xTower = Math.floor(x/this.GRID_SIZE) * this.GRID_SIZE;
+        let yTower = Math.floor(y/this.GRID_SIZE) * this.GRID_SIZE;
+        const pos = new Position(xTower, yTower);
+        console.log(xTower, yTower);
+        for(let i = 0; i < this.path.length - 1; i++){
+            if(pos.between(this.path[i], this.path[i+1]))
+                return;
+        }
+
+        const tower = new Tower(pos, range, damage, speed, price, color);
+        this.towers.push(tower);
+    }
+    removeTower(pos){
+        for(let i = 0; i < this.towers.length; i++){
+            if(this.towers[i].pos.equal(pos)){
+                this.towers.splice(i, 1);
+                return this.towers[i].price
+            }
+        }
+        return null;
+    }
+    locateTower(pos){
+
+    }
+
+    
 
 }
