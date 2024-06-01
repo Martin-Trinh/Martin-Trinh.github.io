@@ -25,10 +25,10 @@ export default class Position{
     }
     between(start, end){
         if(this.x === start.x){
-            return this.y >= start.y && this.y <= end.y;
+            return this.y >= start.y && this.y <= end.y || this.y <= start.y && this.y >= end.y;
         }
         if(this.y === start.y){
-            return this.x >= start.x && this.x <= end.x;
+            return this.x >= start.x && this.x <= end.x || this.x <= start.x && this.x >= end.x;
         }
         return false;
     }

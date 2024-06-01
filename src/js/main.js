@@ -46,6 +46,12 @@ const startBtn= document.getElementById('start-btn');
 const resetBtn = document.getElementById('reset-btn');
 const audioBtn = document.getElementById('audio-btn');
 const backToMenu = document.getElementById('back-to-menu');
+const sellBtn = document.getElementById('sell-btn');
+
+sellBtn.addEventListener('click', (e) =>{
+    game.sellTower();
+})
+
 
 const towers = document.querySelectorAll('.tower');
 
@@ -75,16 +81,30 @@ const canvas = document.getElementById('canvas');
 
 canvas.addEventListener('dragover', (e) =>{
     e.preventDefault();
-});
-
-canvas.addEventListener('drop', (e) =>{
-    e.preventDefault();
-    const towerType = e.dataTransfer.getData('text/plain');
-    console.log(towerType);
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    console.log(`x: ${x}, y: ${y}`);
+    game.map.setHighlightGrid(x, y);
+});
+
+canvas.addEventListener('mousemove', (e) =>{
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    game.map.setHighlightGrid(x, y);
+})
+canvas.addEventListener('click', (e) =>{
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    game.map.setHighlightTower(x, y);
+})
+canvas.addEventListener('drop', (e) =>{
+    e.preventDefault();
+    const towerType = e.dataTransfer.getData('text/plain');
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     game.map.addTower({x, y}, towerStats[towerType]);
 })
 

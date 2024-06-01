@@ -38,9 +38,7 @@ export default class Game{
     }
     init(){
         this.setGameInfo();
-        this.canvas.width = 800;
-        this.canvas.height = 600;
-        this.canvas.style.backgroundColor = 'gray';
+        // this.map.setHighlightGrid();
         this.spawnEnemy(10, 1500);
         requestAnimationFrame(this.gameloop);
     }
@@ -58,18 +56,6 @@ export default class Game{
         }
     }
     update(timestamp){
-        const ctx = this.canvas.getContext('2d');
-        ctx.save(); 
-        // Move the ctx to the center of the rectangle
-        ctx.translate(50, 50);
-        // Rotate the ctx
-        ctx.fillStyle = 'red';
-        ctx.rotate(45);
-        ctx.fillRect(50,50, 35, 35);
-        // Draw the rectangle centered at the origin (0, 0)
-        // ctx.fillRect(this.pos.x, this.pos.y, 10, 10);
-        // Restore the context to its original state
-        ctx.restore(); 
         this.map.updateEnemies();
         this.map.updateTowers();
         this.setGameInfo();
@@ -79,7 +65,7 @@ export default class Game{
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.map.renderPath();
         this.map.renderGrid();
-        
+
     }
     gameloop(timestamp){
         const deltaTime = timestamp - this.lastTime;
@@ -91,9 +77,9 @@ export default class Game{
         }
         requestAnimationFrame(this.gameloop);
     }
-    sellTower(pos){
-        let price = this.map.removeTower(pos);
-        if(price !== null)
+    sellTower(){
+        let price = this.map.removeTower();
+        if(price instanceof Number)
             this.money += price/2;
     }
 }

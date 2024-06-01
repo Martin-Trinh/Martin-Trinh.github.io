@@ -8,24 +8,26 @@ export default class Map{
         this.GRID_SIZE = 50;
         this.widthTile = this.canvas.width / this.GRID_SIZE;
         this.heightTile = this.canvas.height / this.GRID_SIZE;
+        this.offset = new Position(this.GRID_SIZE / 2, this.GRID_SIZE / 2);
         this.path = [];
         this.createPath(pathPoints);
         this.enemies = [];
         this.towers = [];
+
+        this.gridHighlight = null;
+        this.towerHighlight = null;
         // this.spawnStartEndPoint();
     }
     spawnStartEndPoint(){
-        const offset = new Position(this.GRID_SIZE / 2, this.GRID_SIZE / 2);
         let x = Math.floor(Math.random() * this.widthTile / 4);
         let y = Math.floor(Math.random() * this.heightTile);
         // generate random start point
-        const startPoint = new Position(x, y).multiply(this.GRID_SIZE).add(offset);
+        const startPoint = new Position(x, y).multiply(this.GRID_SIZE).add(this.offset);
         // add start point to path
-        this.path.splice(0, 0, startPoint);
         x = (Math.floor(Math.random() * this.widthTile /4) + this.widthTile * 3/4);
         y = Math.floor(Math.random() * this.heightTile);
         // generate random end point
-        const endPoint = new Position(x, y).multiply(this.GRID_SIZE).add(offset);
+        const endPoint = new Position(x, y).multiply(this.GRID_SIZE).add(this.offset);
         // add end point to path
         this.path.push(endPoint);
     }
@@ -76,6 +78,11 @@ export default class Map{
             ctx.lineTo(this.canvas.width, i);
             ctx.stroke();
         }
+        if(this.gridHighlight){
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.fillRect(this.gridHighlight.x, this.gridHighlight.y, this.GRID_SIZE, this.GRID_SIZE);
+        }
+        this.highlightTower();
     }
     updateEnemies(){
         // move enemies
@@ -98,30 +105,63 @@ export default class Map{
             tower.render(canvas);
         });
     }
+    collideWithPath(pos){
+        for(let i = 0; i < this.path.length - 1; i++){
+            if(pos.between(this.path[i], this.path[i+1]))
+                return true;
+        }
+        return false;
+    }
     addTower({x, y}, {range, damage, speed, price, color}){
         let xTower = Math.floor(x/this.GRID_SIZE) * this.GRID_SIZE;
         let yTower = Math.floor(y/this.GRID_SIZE) * this.GRID_SIZE;
-        const pos = new Position(xTower, yTower);
-        console.log(xTower, yTower);
-        for(let i = 0; i < this.path.length - 1; i++){
-            if(pos.between(this.path[i], this.path[i+1]))
-                return;
-        }
-
+        const pos = new Position(xTower, yTower).add(this.offset);
+        if(this.collideWithPath(pos))
+            return
+        // create tower
         const tower = new Tower(pos, range, damage, speed, price, color);
         this.towers.push(tower);
     }
-    removeTower(pos){
+    removeTower(){
         for(let i = 0; i < this.towers.length; i++){
-            if(this.towers[i].pos.equal(pos)){
+            if(this.towers[i].pos.equal(this.towerHighlight)){
+                const price = this.towers[i].price;
                 this.towers.splice(i, 1);
-                return this.towers[i].price
+                this.towerHighlight = null;
+                return price;
             }
         }
-        return null;
     }
-    locateTower(pos){
-
+    setHighlightTower(x, y){
+        let xTower = Math.floor(x/this.GRID_SIZE) * this.GRID_SIZE;
+        let yTower = Math.floor(y/this.GRID_SIZE) * this.GRID_SIZE;
+        const pos = new Position(xTower, yTower).add(this.offset);
+        for(let i = 0; i < this.towers.length; i++){
+            if(this.towers[i].pos.equal(pos)){
+                this.towerHighlight = pos;
+                return;
+            }
+        }
+        this.towerHighlight = null;
+    }
+    setHighlightGrid(x, y){
+        const xGrid = Math.floor(x / this.GRID_SIZE) * this.GRID_SIZE;
+        const yGrid = Math.floor(y / this.GRID_SIZE) * this.GRID_SIZE;
+        this.gridHighlight = new Position(xGrid, yGrid);
+        if(this.collideWithPath(this.gridHighlight.add(this.offset))){
+            this.gridHighlight = null;
+            return
+        }
+    }
+    highlightTower(){
+        // highlight tower
+        if(this.towerHighlight){
+            const ctx = this.canvas.getContext('2d');
+            const x = this.towerHighlight.x - this.offset.x;
+            const y = this.towerHighlight.y - this.offset.y;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+        }
     }
 
     
