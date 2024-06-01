@@ -1,17 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <script type="module" src="js/main.js"></script>
-  </head>
-  <body>
-    <nav class="navigation">
-      <h1 class="heading" id="app-heading">Tower defense</h1>
-    </nav>
-    <main id="game-container">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tower defense - KAJ</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <nav class="navigation">
+    <h1 class="heading" id="app-heading">Tower defense</h1>
+  </nav>
+  <main class="container">
+    <div id="start-page" class="container page">
+      <h2>Welcome to the game</h2>
+      <div class="form-container">
+        <form id="start-game-form">
+          <label for="audio">
+            Audio:
+            <input type="checkbox" id="audio" name="audio" checked />
+            <span class="checkmark"></span>
+          </label>
+          <label for="player-name">Name
+            <input type="text" id="player-name" placeholder="Enter your name" autofocus required autocomplete="off"/>
+          </label>
+          <button type="submit" id="start-game-btn" >Start Game</button>
+        </form>
+      </div>
+      <div class="tutorial">
+        <h2>How to Play</h2>
+        <p>
+          Welcome to Tower Defense game! Here's a brief tutorial to get you
+          started:
+        </p>
+        <div class="tutorial">
+          <button id="show-tutorial-btn">Show video tutorial</button>
+          <video id="tutorial-video" controls>
+            <source src="assets/ZWA preview - Imgur.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        </div>
+      </div>
+    </div>
+    <div id="loading-page" class="container">
+      <h2>Loading...</h2>
+      
+      <svg class="loading-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+        <circle cx="50%" cy="50%" r="40"/>
+      </svg>
+    </div>
+    <div id="game-container" class="container">
       <aside class="sidebar">
         <section id="game-info">
           <div>
@@ -32,42 +71,30 @@
           </div>
         </section>
         <section>
-            <div>
-                <div id="towers">
-                  <h2>Towers</h2>
-                  <div class="tower-box">
-                    <div class="tower" data-tower-type="basic" draggable="true"></div>
-                  </div>
-                  <div class="tower-box">
-                    <div
-                      class="tower"
-                      data-tower-type="archer"
-                      draggable="true"
-                    ></div>
-                  </div>
-                  <div class="tower-box">
-                    <div
-                      class="tower"
-                      data-tower-type="cannon"
-                      draggable="true"
-                    ></div>
-                  </div>
-                  <div class="tower-box">
-                    <div
-                      class="tower"
-                      data-tower-type="sniper"
-                      draggable="true"
-                    ></div>
-                  </div>
-                </div>
-                <div id="tower-info">
-                  <p id="tower-type"></p>
-                  <p id="tower-damage"></p>
-                  <p id="tower-range"></p>
-                  <p id="tower-speed"></p>
-                  <p id="tower-price"></p>
-                </div>
+          <div>
+            <div id="towers">
+              <h2>Towers</h2>
+              <div class="tower-box">
+                <div class="tower" data-tower-type="basic" draggable="true"></div>
+              </div>
+              <div class="tower-box">
+                <div class="tower" data-tower-type="archer" draggable="true"></div>
+              </div>
+              <div class="tower-box">
+                <div class="tower" data-tower-type="cannon" draggable="true"></div>
+              </div>
+              <div class="tower-box">
+                <div class="tower" data-tower-type="sniper" draggable="true"></div>
+              </div>
             </div>
+            <div id="tower-info">
+              <p id="tower-type"></p>
+              <p id="tower-damage"></p>
+              <p id="tower-range"></p>
+              <p id="tower-speed"></p>
+              <p id="tower-price"></p>
+            </div>
+          </div>
           <div id="tower-tutorial">
             <h2>Guide:</h2>
             <p>Drag tower and place it to desired tile</p>
@@ -78,12 +105,21 @@
       <canvas id="canvas" width="800" height="600"> </canvas>
       <aside class="sidebar">
         <button id="next-stage-btn">Next stage</button>
-        <button id="start-btn">Start</button>
         <button id="reset-btn">Reset</button>
         <button id="audio-btn">Audio</button>
         <button id="sell-btn">Sell</button>
-        <button id="back-to-menu">Back to menu</button>
+        <button id="back-to-menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="feather feather-arrow-left">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to Menu
+        </button>
       </aside>
-    </main>
-  </body>
+    </div>
+  </main>
+</body>
+
 </html>

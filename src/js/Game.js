@@ -20,15 +20,30 @@ export default class Game{
         this.money = 100;
         this.wave = 1;
         
+        this.timeOutIds = [];
     }
     nextStage(){
 
     }
     reset(){
-
+        this.map.towers = [];
+        this.map.enemies = [];
+        this.map.gridHighlight = null;
+        this.map.towerHighlight = null;
+        this.score = 0;
+        this.lives = 20;
+        this.money = 100;
+        this.wave = 1;
+        // reset game info
+        this.setGameInfo();
+        // clear spawn enemy timeout
+        for (let id of this.timeOutIds) {
+            clearTimeout(id);
+        }
+        this.timeOutIds = [];
     }
     start(){
-
+        this.spawnEnemy(10, 1500);
     }
     setGameInfo(){
         this.scoreElem.textContent = this.score;
@@ -38,8 +53,6 @@ export default class Game{
     }
     init(){
         this.setGameInfo();
-        // this.map.setHighlightGrid();
-        this.spawnEnemy(10, 1500);
         requestAnimationFrame(this.gameloop);
     }
     addEnemy(speed, maxHealth, coins){
@@ -47,12 +60,13 @@ export default class Game{
     }
     spawnEnemy(count, interval){
         for(let i = 0; i < count; i++){
-            setTimeout(() => {
+            const timeoutId = setTimeout(() => {
                 const speed = 2;
                 const maxHealth = 100;
                 const coins = 10;
                 this.addEnemy(speed, maxHealth, coins);
             }, i*interval);
+            this.timeOutIds.push(timeoutId);
         }
     }
     update(timestamp){
