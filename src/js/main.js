@@ -58,6 +58,7 @@ startForm.addEventListener('submit', (e) =>{
     const audioField = document.getElementById('audio');
     navigateToPage('loading-page');
     setTimeout(() =>{
+        game.setting(nameField.value, audioField.checked);
         loadGame();
     }, 2000);
 });
@@ -70,13 +71,12 @@ showTutorialBtn.addEventListener('click', (e) =>{
 });
 
 window.addEventListener('popstate', (e) =>{
-    console.log(e);
     if(e.state && e.state.page){
         if(e.state.page === 'game-page', true){
-            navigateToPage('start-page');
+            backToMenu();
         }
     }else{
-        navigateToPage('start-page');
+        backToMenu();
     }
 });
 
@@ -107,20 +107,29 @@ const canvas = document.getElementById('canvas');
 const nextWaveBtn = document.getElementById('next-wave-btn');
 const resetBtn = document.getElementById('reset-btn');
 const audioBtn = document.getElementById('audio-btn');
-const backToMenu = document.getElementById('back-to-menu');
+const backToMenuBtn = document.getElementById('back-to-menu');
 const sellBtn = document.getElementById('sell-btn');
 
-sellBtn.addEventListener('click', e => game.sellTower());
+sellBtn.addEventListener('click', () => game.sellTower());
 
-nextWaveBtn.addEventListener('click', e => game.nextWave());
+nextWaveBtn.addEventListener('click', () => game.nextWave());
 
-resetBtn.addEventListener('click', e => game.reset());
+resetBtn.addEventListener('click', () => game.reset());
 
-backToMenu.addEventListener('click', e =>{
-    game.stop();
-    game.reset();
-    navigateToPage('start-page');
-});
+backToMenuBtn.addEventListener('click', () => backToMenu());
+
+audioBtn.addEventListener('click', e =>{
+    if(game.backgroundMusic.paused){
+        game.backgroundMusic.play();
+    }else{
+        game.backgroundMusic.pause();
+    }
+    if(game.map.loseLifeAudio.volume){
+        game.map.loseLifeAudio.volume = 0;
+    }else{
+        game.map.loseLifeAudio.volume = 0.1;
+    }
+})
 
 
 canvas.addEventListener('dragover', (e) =>{
@@ -149,8 +158,26 @@ canvas.addEventListener('drop', (e) =>{
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    game.map.addTower({x, y}, towerStats[towerType]);
+    if(game.gameInfo.money < towerStats[towerType].price){
+        return;
+    }
+    if(game.map.addTower({x, y}, towerStats[towerType])){
+        game.gameInfo.money -= towerStats[towerType].price;
+        game.setGameInfo();
+    }
 })
+
+const exitGameBtn = document.getElementById('exit-game');
+const restartGameBtn = document.getElementById('restart-game');
+
+exitGameBtn.addEventListener('click', () => backToMenu());
+restartGameBtn.addEventListener('click', () => loadGame());
+
+function backToMenu(){
+    navigateToPage('start-page');
+    game.stop();
+    game.reset();
+}
 
 function loadGame(){
     navigateToPage('game-page', true);

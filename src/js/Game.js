@@ -8,12 +8,18 @@ export default class Game{
         this.livesElem = document.getElementById('lives');
         this.moneyElem = document.getElementById('money');
         this.waveElem  = document.getElementById('wave-number');
+        this.gameOver = document.getElementById('game-over');
 
         this.map = new Map(pathPoints);
         this.FPS = 30;
         this.interval = 1000 / this.FPS;
         this.lastTime = 0;
         this.gameloop = this.gameloop.bind(this);
+        this.backgroundMusic = new Audio('assets/audio/background_music.mp3');
+        this.backgroundMusic.volume = 0.1;
+        this.backgroundMusic.loop = true;
+        this.audioOn = true;
+        this.playerName;
 
         this.gameInfo;
         this.timeOutIds = [];
@@ -22,6 +28,10 @@ export default class Game{
     nextWave(){
         this.gameInfo.wave++;
         this.spawnEnemy(10, 1500);
+    }
+    setting(name, audioOn){
+        this.audioOn = audioOn;
+        this.playerName = name;
     }
     setGameInfo(){
         this.scoreElem.textContent = this.gameInfo.score;
@@ -40,7 +50,6 @@ export default class Game{
             money: 100,
             wave: 0
         }
-        console.log(this.gameInfo);
         // reset game info
         this.setGameInfo();
         // clear spawn enemy timeout
@@ -48,9 +57,17 @@ export default class Game{
             clearTimeout(id);
         }
         this.timeOutIds = [];
+        if(!this.backgroundMusic.paused)
+            this.backgroundMusic.pause();
     }
     init(){
         this.reset();
+        if(this.audioOn){
+            this.backgroundMusic.play();
+            this.map.loseLifeAudio.volume = 0.01;
+        }else{
+            this.map.loseLifeAudio.volume = 0;
+        }
         this.setGameInfo();
         this.requestId = window.requestAnimationFrame(this.gameloop);
     }
@@ -89,6 +106,7 @@ export default class Game{
             this.lastTime = timestamp;
         }
         if(this.gameInfo.lives <= 0){
+            this.gameOver.style.display = 'flex';
             this.reset();
             this.stop();
         }

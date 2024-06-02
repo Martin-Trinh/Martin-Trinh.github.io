@@ -16,6 +16,8 @@ export default class Map{
 
         this.gridHighlight = null;
         this.towerHighlight = null;
+        this.loseLifeAudio = new Audio('assets/audio/lose_life.mp3');
+
         // this.spawnStartEndPoint();
     }
     spawnStartEndPoint(){
@@ -96,6 +98,7 @@ export default class Map{
         this.enemies = this.enemies.filter(enemy => {
             // enemy reaches the end point
             if(enemy.pos.equal(this.path[this.path.length - 1])){
+                this.loseLifeAudio.play();
                 gameInfo.lives--;
                 return false;
             }
@@ -129,10 +132,11 @@ export default class Map{
         let yTower = Math.floor(y/this.GRID_SIZE) * this.GRID_SIZE;
         const pos = new Position(xTower, yTower).add(this.offset);
         if(this.collideWithPath(pos))
-            return
+            return false;
         // create tower
         const tower = new Tower(pos, range, damage, speed, price, color);
         this.towers.push(tower);
+        return true;
     }
     removeTower(){
         for(let i = 0; i < this.towers.length; i++){
