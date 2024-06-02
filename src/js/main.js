@@ -101,58 +101,60 @@ for(let tower of towers){
     })
    
 }
+const game = new Game(pathPoints);
+
+const canvas = document.getElementById('canvas');
+const nextWaveBtn = document.getElementById('next-wave-btn');
+const resetBtn = document.getElementById('reset-btn');
+const audioBtn = document.getElementById('audio-btn');
+const backToMenu = document.getElementById('back-to-menu');
+const sellBtn = document.getElementById('sell-btn');
+
+sellBtn.addEventListener('click', e => game.sellTower());
+
+nextWaveBtn.addEventListener('click', e => game.nextWave());
+
+resetBtn.addEventListener('click', e => game.reset());
+
+backToMenu.addEventListener('click', e =>{
+    game.stop();
+    game.reset();
+    navigateToPage('start-page');
+});
+
+
+canvas.addEventListener('dragover', (e) =>{
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    game.map.setHighlightGrid(x, y);
+});
+
+canvas.addEventListener('mousemove', (e) =>{
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    game.map.setHighlightGrid(x, y);
+})
+canvas.addEventListener('click', (e) =>{
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    game.map.setHighlightTower(x, y);
+})
+canvas.addEventListener('drop', (e) =>{
+    e.preventDefault();
+    const towerType = e.dataTransfer.getData('text/plain');
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    game.map.addTower({x, y}, towerStats[towerType]);
+})
+
 function loadGame(){
     navigateToPage('game-page', true);
-    const game = new Game(pathPoints);
     game.init();
-
-    const canvas = document.getElementById('canvas');
-    const nextStageBtn = document.getElementById('next-stage-btn');
-    const resetBtn = document.getElementById('reset-btn');
-    const audioBtn = document.getElementById('audio-btn');
-    const backToMenu = document.getElementById('back-to-menu');
-    const sellBtn = document.getElementById('sell-btn');
-
-    sellBtn.addEventListener('click', e => game.sellTower());
-
-    nextStageBtn.addEventListener('click', e => game.start());
-
-    resetBtn.addEventListener('click', e => game.reset());
-
-    backToMenu.addEventListener('click', e =>{
-        navigateToPage('start-page');
-    });
-
-
-    canvas.addEventListener('dragover', (e) =>{
-        e.preventDefault();
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        game.map.setHighlightGrid(x, y);
-    });
-
-    canvas.addEventListener('mousemove', (e) =>{
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        game.map.setHighlightGrid(x, y);
-    })
-    canvas.addEventListener('click', (e) =>{
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        game.map.setHighlightTower(x, y);
-    })
-    canvas.addEventListener('drop', (e) =>{
-        e.preventDefault();
-        const towerType = e.dataTransfer.getData('text/plain');
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        game.map.addTower({x, y}, towerStats[towerType]);
-    })
-
 }
 
 

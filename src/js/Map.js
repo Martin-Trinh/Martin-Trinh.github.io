@@ -45,8 +45,10 @@ export default class Map{
         const ctx = this.canvas.getContext('2d');
         ctx.fillStyle = '#FFDB00';
         const startPoint = this.path[0];
+        // draw start point
         ctx.fillRect(startPoint.x - this.GRID_SIZE/2, startPoint.y - this.GRID_SIZE/2, this.GRID_SIZE, this.GRID_SIZE);
         ctx.fillStyle = '#FF3333';
+        // draw end point
         const endPoint = this.path[this.path.length - 1];
         ctx.fillRect(endPoint.x - this.GRID_SIZE/ 2, endPoint.y - this.GRID_SIZE/2, this.GRID_SIZE, this.GRID_SIZE);
     }
@@ -78,30 +80,37 @@ export default class Map{
             ctx.lineTo(this.canvas.width, i);
             ctx.stroke();
         }
+        // highlight selected tower position
         if(this.gridHighlight){
             ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
             ctx.fillRect(this.gridHighlight.x, this.gridHighlight.y, this.GRID_SIZE, this.GRID_SIZE);
         }
         this.highlightTower();
     }
-    updateEnemies(){
+    updateEnemies(gameInfo){
         // move enemies
         this.enemies.forEach(enemy => {
             enemy.move(this.canvas);
         });
         // remove enemies that reach the end point or die
         this.enemies = this.enemies.filter(enemy => {
-            if(enemy.pos.equal(this.path[this.path.length - 1]))
+            // enemy reaches the end point
+            if(enemy.pos.equal(this.path[this.path.length - 1])){
+                gameInfo.lives--;
                 return false;
-            if(enemy.currentHealth <= 0)
+            }
+            // enemy dies
+            if(enemy.currentHealth <= 0){
+                gameInfo.score++;
+                gameInfo.money += enemy.coins;
                 return false;
+            }
             return true;
         });
         // render enemies
         this.enemies.forEach(enemy => {
             enemy.render(this.canvas);
         });
-
     }
     updateTowers(){
         this.towers.forEach(tower => {

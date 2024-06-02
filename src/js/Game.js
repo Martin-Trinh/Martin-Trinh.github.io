@@ -14,26 +14,33 @@ export default class Game{
         this.interval = 1000 / this.FPS;
         this.lastTime = 0;
         this.gameloop = this.gameloop.bind(this);
-        
-        this.score = 0;
-        this.lives = 20;
-        this.money = 100;
-        this.wave = 1;
-        
-        this.timeOutIds = [];
-    }
-    nextStage(){
 
+        this.gameInfo;
+        this.timeOutIds = [];
+        this.requestId = null;
+    }
+    nextWave(){
+        this.gameInfo.wave++;
+        this.spawnEnemy(10, 1500);
+    }
+    setGameInfo(){
+        this.scoreElem.textContent = this.gameInfo.score;
+        this.livesElem.textContent = this.gameInfo.lives;
+        this.moneyElem.textContent = this.gameInfo.money;
+        this.waveElem.textContent = this.gameInfo.wave;
     }
     reset(){
         this.map.towers = [];
         this.map.enemies = [];
         this.map.gridHighlight = null;
         this.map.towerHighlight = null;
-        this.score = 0;
-        this.lives = 20;
-        this.money = 100;
-        this.wave = 1;
+        this.gameInfo = {
+            score: 0,
+            lives: 20,
+            money: 100,
+            wave: 0
+        }
+        console.log(this.gameInfo);
         // reset game info
         this.setGameInfo();
         // clear spawn enemy timeout
@@ -42,18 +49,10 @@ export default class Game{
         }
         this.timeOutIds = [];
     }
-    start(){
-        this.spawnEnemy(10, 1500);
-    }
-    setGameInfo(){
-        this.scoreElem.textContent = this.score;
-        this.livesElem.textContent = this.lives;
-        this.moneyElem.textContent = this.money;
-        this.waveElem.textContent = this.wave;
-    }
     init(){
+        this.reset();
         this.setGameInfo();
-        requestAnimationFrame(this.gameloop);
+        this.requestId = window.requestAnimationFrame(this.gameloop);
     }
     addEnemy(speed, maxHealth, coins){
         this.map.addEnemy(speed, maxHealth,coins);
@@ -69,8 +68,8 @@ export default class Game{
             this.timeOutIds.push(timeoutId);
         }
     }
-    update(timestamp){
-        this.map.updateEnemies();
+    update(){
+        this.map.updateEnemies(this.gameInfo);
         this.map.updateTowers();
         this.setGameInfo();
     }
@@ -86,14 +85,24 @@ export default class Game{
         if(deltaTime >= this.interval){
             // console.log("FPS:" + 1000 / deltaTime);
             this.render();
-            this.update(timestamp);
+            this.update();
             this.lastTime = timestamp;
         }
-        requestAnimationFrame(this.gameloop);
+        if(this.gameInfo.lives <= 0){
+            this.reset();
+            this.stop();
+        }
+        if(this.requestId)
+            this.requestId = window.requestAnimationFrame(this.gameloop);
+    }
+    stop(){
+        if(this.requestId)
+            window.cancelAnimationFrame(this.requestId);
+        this.requestId = null;
     }
     sellTower(){
         let price = this.map.removeTower();
-        if(price instanceof Number)
-            this.money += price/2;
+        if(price)
+            this.gameInfo.money += price/2;
     }
 }

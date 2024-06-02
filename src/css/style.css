@@ -200,9 +200,50 @@ section:nth-of-type(2) > :first-child{
 #loading-page h2{
     text-align: center;
     letter-spacing: .5rem;
-    font-size: 2rem;
+    font-weight: 800;
+    line-height: 10vh;
+    font-size: 3rem;
     color: var(--text-color);
     text-shadow: var(--secondary-color) 2px 2px 5px;
+}
+h2.loading-text span{
+    animation: loading 1s linear infinite alternate;
+}
+.loading-text span:nth-of-type(2){
+    animation-delay: 0.2s;
+}
+.loading-text span:nth-of-type(3){
+    animation-delay: 0.3s;
+}
+.loading-text span:nth-of-type(4){
+    animation-delay: 0.4s;
+}
+.loading-text span:nth-of-type(5){
+    animation-delay: 0.5s;
+}
+.loading-text span:nth-of-type(6){
+    animation-delay: .6s;
+}
+.loading-text span:nth-of-type(7){
+    animation-delay: .7s;
+}
+.loading-text span:nth-of-type(8){
+    animation-delay: .8s;
+}
+.loading-text span:nth-of-type(9){
+    animation-delay: .9s;
+}
+.loading-text span:nth-of-type(10){
+    animation-delay: 1s;
+}
+@keyframes loading {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+    
 }
 .loading-svg{
     width: 100%;
@@ -215,7 +256,7 @@ section:nth-of-type(2) > :first-child{
     }
     100% {
         transform: rotate(360deg);
-    }
+    } 
 }
 .loading-svg circle{
     fill: none;
