@@ -162,6 +162,11 @@ section:nth-of-type(2) > :first-child{
     display: flex;
     gap: 1px;
 }
+#player-name{
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
 #towers, #tower-info{
     display: flex;
     flex-direction: column;
@@ -174,18 +179,17 @@ section:nth-of-type(2) > :first-child{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: center;
     border: 1px solid black;
-    margin-top: 1rem;
 }
 #tower-tutorial p::before{
     content: '- ';
 }
 #tower-tutorial h2{
-    margin-bottom: 1rem;
+    text-align: center;
 }
 #tower-info p, #tower-tutorial p{
-    margin-bottom: 1rem;
+    margin-left: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 #back-to-menu{
     margin-top: 5rem;

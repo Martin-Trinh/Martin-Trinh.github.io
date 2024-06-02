@@ -27,11 +27,11 @@
               <input type="checkbox" id="audio" name="audio" checked />
               <span class="checkmark"></span>
             </label>
-            <label for="player-name"
+            <label for="player-name-input"
               >Name
               <input
                 type="text"
-                id="player-name"
+                id="player-name-input"
                 placeholder="Enter your name"
                 autofocus
                 required
@@ -82,6 +82,7 @@
       </div>
       <div id="game-page" class="page">
         <aside class="sidebar">
+          <h2 id="player-name">Player: </h2>
           <section id="game-info">
             <div>
               <h2>Score</h2>
@@ -143,8 +144,9 @@
             </div>
             <div id="tower-tutorial">
               <h2>Guide:</h2>
-              <p>Drag tower and place it to desired tile</p>
               <p>Hover over the tower to see its stats</p>
+              <p>Drag tower and place it to desired tile</p>
+              <p>Click on tower then click sell to remove tower</p>
             </div>
           </section>
         </aside>

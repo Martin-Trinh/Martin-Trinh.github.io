@@ -1,46 +1,10 @@
 import Game from './Game.js';
-
-const pathPoints = [
-    {x: 0, y: 0},
-    {x: 0, y: 4},
-    {x: 6, y: 4},
-    {x: 6, y: 10},
-    {x: 10, y: 10},
-    {x: 10, y: 2},
-    {x: 13, y: 2},
-    {x: 13, y: 9},
-];
-
-const towerStats = {
-    basic: {
-        range: 100,
-        damage: 10,
-        speed: 8,
-        price: 10,
-        color: 'red'
-    },
-    archer: {
-        range: 50,
-        damage: 5,
-        speed: 10,
-        price: 20,
-        color: 'green'
-    },
-    cannon:{
-        range: 150,
-        damage: 20,
-        speed: 5,
-        price: 30,
-        color: 'blue'
-    },
-    sniper:{
-        range: 200,
-        damage: 50,
-        speed: 2,
-        price: 50,
-        color: 'purple'
-    }
-}
+import { towerStats, pathPoints } from './gameData.js';
+/**
+ *  Navigate to page using History API
+ * @param {*} pageId  html id to navigate
+ * @param {*} pushState 
+ */
 function navigateToPage(pageId, pushState = false) {
     if(pushState)
         history.pushState({ page: pageId }, null, `#${pageId}`);
@@ -51,25 +15,35 @@ function navigateToPage(pageId, pushState = false) {
     });
     page.style.display = 'flex';
 }
+/**
+ * Event listener for start game form
+ */
 const startForm = document.getElementById('start-game-form');
 startForm.addEventListener('submit', (e) =>{
     e.preventDefault();
-    const nameField = document.getElementById('player-name');
+    const nameField = document.getElementById('player-name-input');
     const audioField = document.getElementById('audio');
+    // navigate to loading page
     navigateToPage('loading-page');
+    // simulate loading time
     setTimeout(() =>{
+        // set name and audio settings
         game.setting(nameField.value, audioField.checked);
         loadGame();
     }, 2000);
 });
-
+/**
+ * Event listener for show tutorial button
+ */
 const showTutorialBtn = document.getElementById('show-tutorial-btn');
 showTutorialBtn.addEventListener('click', (e) =>{
     const videoTutorial = document.getElementById('tutorial-video');
     showTutorialBtn.style.display = 'none';
     videoTutorial.style.display = 'block';
 });
-
+/**
+ * Handle back button from browser
+ */
 window.addEventListener('popstate', (e) =>{
     if(e.state && e.state.page){
         if(e.state.page === 'game-page', true){
@@ -79,14 +53,18 @@ window.addEventListener('popstate', (e) =>{
         backToMenu();
     }
 });
-
+/**
+ * Add towers to the tower menu
+ */
 const towers = document.querySelectorAll('.tower');
 for(let tower of towers){
     const color = towerStats[tower.dataset.towerType].color;
     tower.style.backgroundColor = color;
+    // add drag event
     tower.addEventListener('dragstart', (e) =>{
         e.dataTransfer.setData('text/plain', e.target.dataset.towerType);
     })
+    // add mouseover event to highlight tile
     tower.addEventListener('mouseover', (e) =>{
         const type = document.querySelector('#tower-type');
         const damage = document.querySelector('#tower-damage');
@@ -101,6 +79,7 @@ for(let tower of towers){
     })
    
 }
+// create game instance
 const game = new Game(pathPoints);
 
 const canvas = document.getElementById('canvas');
@@ -117,13 +96,17 @@ nextWaveBtn.addEventListener('click', () => game.nextWave());
 resetBtn.addEventListener('click', () => game.reset());
 
 backToMenuBtn.addEventListener('click', () => backToMenu());
-
+/**
+ * Event listener for audio button
+ */
 audioBtn.addEventListener('click', e =>{
+    // background music
     if(game.backgroundMusic.paused){
         game.backgroundMusic.play();
     }else{
         game.backgroundMusic.pause();
     }
+    // lose life audio
     if(game.map.loseLifeAudio.volume){
         game.map.loseLifeAudio.volume = 0;
     }else{
@@ -131,7 +114,7 @@ audioBtn.addEventListener('click', e =>{
     }
 })
 
-
+// dragover event to highlight tile based on mouse position on canvas
 canvas.addEventListener('dragover', (e) =>{
     e.preventDefault();
     const rect = canvas.getBoundingClientRect();
@@ -140,45 +123,53 @@ canvas.addEventListener('dragover', (e) =>{
     game.map.setHighlightGrid(x, y);
 });
 
+// mousemove event to highlight tile based on mouse position on canvas
 canvas.addEventListener('mousemove', (e) =>{
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     game.map.setHighlightGrid(x, y);
 })
+// click event to hightlight selected tower on canvas
 canvas.addEventListener('click', (e) =>{
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     game.map.setHighlightTower(x, y);
 })
+// drop event to add tower on canvas
 canvas.addEventListener('drop', (e) =>{
     e.preventDefault();
+    // get data from drag event
     const towerType = e.dataTransfer.getData('text/plain');
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
+    // check if player has enough money
     if(game.gameInfo.money < towerStats[towerType].price){
         return;
     }
     if(game.map.addTower({x, y}, towerStats[towerType])){
+        // decrease money
         game.gameInfo.money -= towerStats[towerType].price;
         game.setGameInfo();
     }
 })
-
+// exit and restart game button on game over page
 const exitGameBtn = document.getElementById('exit-game');
 const restartGameBtn = document.getElementById('restart-game');
 
 exitGameBtn.addEventListener('click', () => backToMenu());
 restartGameBtn.addEventListener('click', () => loadGame());
 
+// back to menu function
 function backToMenu(){
     navigateToPage('start-page');
     game.stop();
     game.reset();
 }
 
+// load game function
 function loadGame(){
     navigateToPage('game-page', true);
     game.init();

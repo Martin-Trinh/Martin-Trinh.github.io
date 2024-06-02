@@ -9,14 +9,20 @@ export default class Tower {
         this.price = price;
         this.color = color;
         this.pos = pos;
+        this.target = null;
+        this.bullets = [];
+        // for generating bullets
+        this.frame = 0;
+
         this.GRID_SIZE = 50;
         this.width = Math.sqrt(2* this.GRID_SIZE** 2)/2 
         this.height = Math.sqrt(2* this.GRID_SIZE** 2)/2; 
-        this.target = null;
-        this.bullets = [];
-        this.frame = 0;
+        
     }
-    render(canvas){
+    /**
+     * Render tower on canvas
+     */
+    #render(canvas){
         const ctx = canvas.getContext('2d');
         // Save the current ctx state
         ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
@@ -38,7 +44,10 @@ export default class Tower {
         // Restore the context to its original state
         ctx.restore()
     }
-    shoot(){
+    /**
+     * Create bullet and shoot at target
+     */
+    #shoot(){
         if(this.frame % Math.floor(100/this.speed) === 0 && this.target !== null){
             const bulletPos = new Position(this.pos.x, this.pos.y);
             this.bullets.push(new Bullet(bulletPos, this.damage, this.target));
@@ -46,24 +55,31 @@ export default class Tower {
         }
         this.frame++;
     }
+    /**
+     * Update enemy position and shoot bullets
+     * @param {*} enemies 
+     * @param {*} canvas 
+     */
     update(enemies, canvas){
-        this.render(canvas);
-        // find target
+        this.#render(canvas);
+        // find all targets in range
         const enemiesInRange = enemies.filter(enemy => {
             return this.pos.distanceTo(enemy.pos) < this.range + enemy.r;
         });
-        // select the first enemy in range
         if(enemiesInRange.length !== 0){
+            // select the first enemy in range
             this.target = enemiesInRange[0];
         } else {
+            // no enemy in range
             this.target = null;
         }
         // shoot
-        this.shoot();
+        this.#shoot();
         // update bullets
         for(let i = this.bullets.length - 1; i >= 0; i--){
             const bullet = this.bullets[i];
             bullet.update(canvas);
+            // if bullet hits the target
             if(bullet.pos.distanceTo(bullet.target.center) < bullet.r + bullet.target.r){
                 bullet.target.currentHealth -= bullet.damage;
                 this.bullets.splice(i, 1);

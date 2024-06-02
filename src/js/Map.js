@@ -10,7 +10,7 @@ export default class Map{
         this.heightTile = this.canvas.height / this.GRID_SIZE;
         this.offset = new Position(this.GRID_SIZE / 2, this.GRID_SIZE / 2);
         this.path = [];
-        this.createPath(pathPoints);
+        this.#createPath(pathPoints);
         this.enemies = [];
         this.towers = [];
 
@@ -20,6 +20,9 @@ export default class Map{
 
         // this.spawnStartEndPoint();
     }
+    /**
+     * Spawn start and end point
+     */
     spawnStartEndPoint(){
         let x = Math.floor(Math.random() * this.widthTile / 4);
         let y = Math.floor(Math.random() * this.heightTile);
@@ -33,17 +36,27 @@ export default class Map{
         // add end point to path
         this.path.push(endPoint);
     }
+    /**
+     * add enemy to map
+     */
     addEnemy(speed, maxHealth,coins){
         this.enemies.push(new Enemy(speed, maxHealth, this.path, coins));
     }
-    createPath(pathPoints){
+    /**
+     * create path which connect start and end point from pathPoints
+     * @param {*} pathPoints array of position on grid map
+     */
+    #createPath(pathPoints){
         // create path from pathPoints
         pathPoints.forEach(path => {
             const offset = new Position(this.GRID_SIZE / 2, this.GRID_SIZE / 2);
             this.path.push(new Position(path.x, path.y).multiply(this.GRID_SIZE).add(offset));
         });
     }
-    renderStartEndPoint(){
+    /**
+     * render start and end point on canvas
+     */
+    #renderStartEndPoint(){
         const ctx = this.canvas.getContext('2d');
         ctx.fillStyle = '#FFDB00';
         const startPoint = this.path[0];
@@ -54,8 +67,11 @@ export default class Map{
         const endPoint = this.path[this.path.length - 1];
         ctx.fillRect(endPoint.x - this.GRID_SIZE/ 2, endPoint.y - this.GRID_SIZE/2, this.GRID_SIZE, this.GRID_SIZE);
     }
+    /**
+     * render path and grid on canvas
+     */
     renderPath(){
-        this.renderStartEndPoint();
+        this.#renderStartEndPoint();
         const ctx = this.canvas.getContext('2d');
         ctx.strokeStyle = '#FFFFFF';
         ctx.lineWidth = 2;
@@ -66,6 +82,9 @@ export default class Map{
             ctx.stroke();
         }
     }
+    /**
+     * render grid and highlight grid on canvas
+     */
     renderGrid(){
         const ctx = this.canvas.getContext('2d');
         ctx.strokeStyle = 'black';
@@ -89,6 +108,10 @@ export default class Map{
         }
         this.highlightTower();
     }
+    /**
+     * update enemies on map
+     * @param {*} gameInfo score, money, lives
+     */
     updateEnemies(gameInfo){
         // move enemies
         this.enemies.forEach(enemy => {
@@ -115,29 +138,45 @@ export default class Map{
             enemy.render(this.canvas);
         });
     }
+    /**
+     * update towers on map
+     */
     updateTowers(){
         this.towers.forEach(tower => {
             tower.update(this.enemies, this.canvas);
         });
     }
-    collideWithPath(pos){
+    /**
+     * Check if position collide with path on canvas
+     * @param {*} pos position to check
+     * @returns true if collide with path, false otherwise
+     */
+    #collideWithPath(pos){
         for(let i = 0; i < this.path.length - 1; i++){
             if(pos.between(this.path[i], this.path[i+1]))
                 return true;
         }
         return false;
     }
+    /**
+     * create tower and add to map
+     * @returns true if tower is added, false otherwise
+     */
     addTower({x, y}, {range, damage, speed, price, color}){
         let xTower = Math.floor(x/this.GRID_SIZE) * this.GRID_SIZE;
         let yTower = Math.floor(y/this.GRID_SIZE) * this.GRID_SIZE;
         const pos = new Position(xTower, yTower).add(this.offset);
-        if(this.collideWithPath(pos))
+        if(this.#collideWithPath(pos))
             return false;
         // create tower
         const tower = new Tower(pos, range, damage, speed, price, color);
         this.towers.push(tower);
         return true;
     }
+    /**
+     * Remove tower from map
+     * @returns price of tower removed, null if no tower is removed
+     */
     removeTower(){
         for(let i = 0; i < this.towers.length; i++){
             if(this.towers[i].pos.equal(this.towerHighlight)){
@@ -148,6 +187,12 @@ export default class Map{
             }
         }
     }
+    /**
+     * set tower tile to be hightlighted when user click
+     * @param {*} x x mouse position on canvas
+     * @param {*} y y mouse position on canvas
+     * @returns 
+     */
     setHighlightTower(x, y){
         let xTower = Math.floor(x/this.GRID_SIZE) * this.GRID_SIZE;
         let yTower = Math.floor(y/this.GRID_SIZE) * this.GRID_SIZE;
@@ -160,15 +205,24 @@ export default class Map{
         }
         this.towerHighlight = null;
     }
+    /**
+     * Tile to be highlighted when user hover over
+     * @param {*} x x mouse position on canvas
+     * @param {*} y y mouse position on canvas
+     * @returns 
+     */
     setHighlightGrid(x, y){
         const xGrid = Math.floor(x / this.GRID_SIZE) * this.GRID_SIZE;
         const yGrid = Math.floor(y / this.GRID_SIZE) * this.GRID_SIZE;
         this.gridHighlight = new Position(xGrid, yGrid);
-        if(this.collideWithPath(this.gridHighlight.add(this.offset))){
+        if(this.#collideWithPath(this.gridHighlight.add(this.offset))){
             this.gridHighlight = null;
             return
         }
     }
+    /**
+     * highlight the set tower position
+     */
     highlightTower(){
         // highlight tower
         if(this.towerHighlight){
