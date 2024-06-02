@@ -14,14 +14,19 @@ Show tutorial zobrazí video tutoriál
 
 Přetáhnutím jednotlivé věže z levé menu na dané místo v canvasu umístí hráč věž na mapu
 Přejetí myší po jednolivé věže, zobrazí hráč jeho vlastnosti
+
 **Next Wave** - vygeneruje 1 vlna kuliček
+
 **Reset** - resetovat hra na začátku
+
 **Audio** - vypnout zvuk hry
+
 **Back to menu** - vrátí na Start Page
 
 ### Game Over Page
 
 **Restart** - restartuje hra
+
 **Exit game** - vrátí na Start Page
 
 ## Implementace
@@ -29,7 +34,4 @@ Přejetí myší po jednolivé věže, zobrazí hráč jeho vlastnosti
 Hra je implementována v Javascriptu, veškeré objekty hry jsou vykreslovány pomocí canvasu.
 HTML a CSS - pro GUI, animace
 
-## Instalace
-
-Spustit index.html pomocí Liveserver
 
