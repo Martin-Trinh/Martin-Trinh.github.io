@@ -37,7 +37,6 @@ export default class Enemy{
     #healthCheck(){
         // return color based on health percentage
         const healthPercentage = this.currentHealth / this.maxHealth;
-        // console.log("health: " + this.currentHealth + " " + this.health);
         if(healthPercentage < 0.3)
             return "#FF6666";
         if (healthPercentage < 0.8)
@@ -50,18 +49,15 @@ export default class Enemy{
         // check if enemy reach the end of path
         if(this.pathIndex >= this.paths.length){
             this.pos = this.destination;
-            // console.log("Reached destination: "+ this.destination.x + " " + this.destination.y);
             return;
         }
         // fetch destination from path
         this.destination = this.paths[this.pathIndex];
         // calculate direction
         this.direction = new Position(this.destination.x - this.pos.x, this.destination.y - this.pos.y).getDirection();
-        // console.log("dir: " + this.direction.x + " " + this.direction.y);
         // move
         this.pos = this.pos.add(this.direction.multiply(this.speed));
         this.center = new Position(this.pos.x + this.SIZE/2, this.pos.y + this.SIZE/2);
-        // console.log("pos: " + this.pos.x + " " + this.pos.y);
         // check if enemy reach destination
         if(this.pos.equal(this.destination) || this.pos.distanceTo(this.destination) < this.MIN_DIST_FROM_DEST){
             // move to next destination

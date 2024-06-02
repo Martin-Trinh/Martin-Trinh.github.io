@@ -147,6 +147,10 @@ section#game-info{
 .tower-box div[class="tower"]{
     width: 35px;
     height:35px;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
     transform: rotate(45deg);
 }
 #game-page aside:nth-of-type(2){
@@ -183,6 +187,7 @@ section:nth-of-type(2) > :first-child{
 }
 #tower-tutorial p::before{
     content: '- ';
+    font-size: 1rem;
 }
 #tower-tutorial h2{
     text-align: center;
@@ -256,9 +261,17 @@ h2.loading-text span{
 }
 @keyframes rotate {
     0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
         transform: rotate(0deg);
     }
     100% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
         transform: rotate(360deg);
     } 
 }

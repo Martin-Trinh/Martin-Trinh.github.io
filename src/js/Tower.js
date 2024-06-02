@@ -15,9 +15,9 @@ export default class Tower {
         this.frame = 0;
 
         this.GRID_SIZE = 50;
+        // calculate width and height of tower
         this.width = Math.sqrt(2* this.GRID_SIZE** 2)/2 
         this.height = Math.sqrt(2* this.GRID_SIZE** 2)/2; 
-        
     }
     /**
      * Render tower on canvas

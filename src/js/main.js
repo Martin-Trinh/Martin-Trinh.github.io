@@ -1,28 +1,18 @@
 import Game from './Game.js';
 import { towerStats, pathPoints } from './gameData.js';
-/**
- *  Navigate to page using History API
- * @param {*} pageId  html id to navigate
- * @param {*} pushState 
- */
-function navigateToPage(pageId, pushState = false) {
-    if(pushState)
-        history.pushState({ page: pageId }, null, `#${pageId}`);
-    const page = document.getElementById(pageId);
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(p =>{
-        p.style.display = 'none';
-    });
-    page.style.display = 'flex';
-}
+
+
+
 /**
  * Event listener for start game form
- */
+*/
 const startForm = document.getElementById('start-game-form');
 startForm.addEventListener('submit', (e) =>{
     e.preventDefault();
     const nameField = document.getElementById('player-name-input');
     const audioField = document.getElementById('audio');
+    localStorage.setItem('playerName', nameField.value);
+    localStorage.setItem('audio', audioField.checked);
     // navigate to loading page
     navigateToPage('loading-page');
     // simulate loading time
@@ -161,6 +151,27 @@ const restartGameBtn = document.getElementById('restart-game');
 
 exitGameBtn.addEventListener('click', () => backToMenu());
 restartGameBtn.addEventListener('click', () => loadGame());
+
+/**
+ *  Navigate to page using History API
+ * @param {*} pageId  html id to navigate
+ * @param {*} pushState 
+ */
+function navigateToPage(pageId, pushState = false) {
+    if(pushState)
+        history.pushState({ page: pageId }, null, `#${pageId}`);
+    const page = document.getElementById(pageId);
+    const pages = document.querySelectorAll('.page');
+    if(pageId === 'start-page'){
+        // prefill player name and audio settings from local storage
+        document.getElementById('player-name-input').value = localStorage.getItem('playerName') || '';
+        document.getElementById('audio').checked = localStorage.getItem('audio') === 'true';
+    }
+    pages.forEach(p =>{
+        p.style.display = 'none';
+    });
+    page.style.display = 'flex';
+}
 
 // back to menu function
 function backToMenu(){
