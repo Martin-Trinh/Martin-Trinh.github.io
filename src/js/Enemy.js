@@ -7,14 +7,15 @@ export default class Enemy{
         this.coins = coins;
         this.maxHealth = maxHealth;
         this.currentHealth = this.maxHealth;
-        this.width = 10;
-        this.height = 10;
-        this.r = 8;
+        this.SIZE = 25;
+        this.r = 15;
         this.direction;
         this.destination;
         this.paths = path;
         this.pathIndex = 0;
         this.pos = new Position(path[0].x, path[0].y);
+        this.center = new Position(this.pos.x + this.SIZE/2, this.pos.y + this.SIZE/2);
+
     }
     render(canvas){
         const ctx = canvas.getContext('2d');
@@ -25,16 +26,17 @@ export default class Enemy{
         ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
-        // ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
+        // ctx.fillRect(this.pos.x - this.SIZE/2, this.pos.y - this.SIZE/2, this.SIZE, this.SIZE);
     }
     healthCheck(){
         // return color based on health percentage
-        const healthPercentage = this.currentHealth / this.health;
+        const healthPercentage = this.currentHealth / this.maxHealth;
+        // console.log("health: " + this.currentHealth + " " + this.health);
         if(healthPercentage < 0.3)
-            return "red";
+            return "#FF6666";
         if (healthPercentage < 0.8)
-            return "yellow";
-        return "green"
+            return "#FFFF33";
+        return "#33FF33"
     }
     move(){
         // minimum distance tolerate from destination
@@ -51,6 +53,7 @@ export default class Enemy{
         // console.log("dir: " + this.direction.x + " " + this.direction.y);
         // move
         this.pos = this.pos.add(this.direction.multiply(this.speed));
+        this.center = new Position(this.pos.x + this.SIZE/2, this.pos.y + this.SIZE/2);
         // console.log("pos: " + this.pos.x + " " + this.pos.y);
         // check if enemy reach destination
         if(this.pos.equal(this.destination) || this.pos.distanceTo(this.destination) < this.MIN_DIST_FROM_DEST){

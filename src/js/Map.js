@@ -43,17 +43,17 @@ export default class Map{
     }
     renderStartEndPoint(){
         const ctx = this.canvas.getContext('2d');
-        ctx.fillStyle = 'green';
+        ctx.fillStyle = '#FFDB00';
         const startPoint = this.path[0];
         ctx.fillRect(startPoint.x - this.GRID_SIZE/2, startPoint.y - this.GRID_SIZE/2, this.GRID_SIZE, this.GRID_SIZE);
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = '#FF3333';
         const endPoint = this.path[this.path.length - 1];
         ctx.fillRect(endPoint.x - this.GRID_SIZE/ 2, endPoint.y - this.GRID_SIZE/2, this.GRID_SIZE, this.GRID_SIZE);
     }
     renderPath(){
         this.renderStartEndPoint();
         const ctx = this.canvas.getContext('2d');
-        ctx.strokeStyle = 'blue';
+        ctx.strokeStyle = '#FFFFFF';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(this.path[0].x, this.path[0].y);
@@ -89,8 +89,14 @@ export default class Map{
         this.enemies.forEach(enemy => {
             enemy.move(this.canvas);
         });
-        // remove enemies that reach the end point
-        this.enemies = this.enemies.filter(enemy => !enemy.pos.equal(this.path[this.path.length - 1]));
+        // remove enemies that reach the end point or die
+        this.enemies = this.enemies.filter(enemy => {
+            if(enemy.pos.equal(this.path[this.path.length - 1]))
+                return false;
+            if(enemy.currentHealth <= 0)
+                return false;
+            return true;
+        });
         // render enemies
         this.enemies.forEach(enemy => {
             enemy.render(this.canvas);
@@ -98,11 +104,8 @@ export default class Map{
 
     }
     updateTowers(){
-        // this.towers.forEach(tower => {
-        //     tower.update();
-        // });
         this.towers.forEach(tower => {
-            tower.render(canvas);
+            tower.update(this.enemies, this.canvas);
         });
     }
     collideWithPath(pos){

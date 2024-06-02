@@ -1,58 +1,45 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const startPage = document.getElementById('startPage');
-    const gamePage = document.getElementById('gamePage');
-    const settingsForm = document.getElementById('settingsForm');
-    const backButton = document.getElementById('backButton');
+document.addEventListener('DOMContentLoaded', () => {
+    const loaderPage = document.getElementById('loader-page');
+    const startPage = document.getElementById('start-page');
+    const gameCanvasPage = document.getElementById('game-canvas-page');
+    const startButton = document.getElementById('start-button');
+    const backButton = document.getElementById('back-button');
 
-    settingsForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        const audioEnabled = document.getElementById('audio').checked;
-        console.log('Game started with audio:', audioEnabled);
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.add('hidden');
+        });
+        document.getElementById(pageId).classList.remove('hidden');
+    }
 
-        // Use History API to push new state
-        history.pushState({page: 'game'}, 'Game', '/game');
+    function navigateToPage(pageId) {
+        history.pushState({ page: pageId }, '', `#${pageId}`);
+        showPage(pageId);
+    }
 
-        // Hide start page and show game page
-        startPage.classList.add('hidden');
-        gamePage.classList.remove('hidden');
-
-        // Initialize game (Placeholder)
-        initializeGame(audioEnabled);
-    });
-
-    backButton.addEventListener('click', function() {
-        // Use History API to push new state
-        history.pushState({page: 'start'}, 'Start', '/start');
-
-        // Hide game page and show start page
-        gamePage.classList.add('hidden');
-        startPage.classList.remove('hidden');
-    });
-
-    window.addEventListener('popstate', function(event) {
-        if (event.state && event.state.page === 'game') {
-            startPage.classList.add('hidden');
-            gamePage.classList.remove('hidden');
+    window.addEventListener('popstate', (event) => {
+        if (event.state && event.state.page) {
+            showPage(event.state.page);
         } else {
-            gamePage.classList.add('hidden');
-            startPage.classList.remove('hidden');
+            showPage('start-page');
         }
     });
 
-    function initializeGame(audioEnabled) {
-        // Placeholder function to initialize the game
-        const gameCanvas = document.getElementById('gameCanvas');
-        const context = gameCanvas.getContext('2d');
-        
-        gameCanvas.width = 800;
-        gameCanvas.height = 600;
+    // Simulate loading
+    setTimeout(() => {
+        console.log('Loading complete');
+        navigateToPage('start-page');
+    }, 2000);
 
-        context.fillStyle = 'lightgray';
-        context.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-        
-        // Example: Draw a simple rectangle as a placeholder for game content
-        context.fillStyle = 'blue';
-        context.fillRect(100, 100, 200, 100);
-    }
+    startButton.addEventListener('click', () => {
+        navigateToPage('game-canvas-page');
+    });
+
+    backButton.addEventListener('click', () => {
+        navigateToPage('start-page');
+    });
+
+    // Initialize the first page
+    showPage('loader-page');
+
 });

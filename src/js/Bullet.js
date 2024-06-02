@@ -1,17 +1,23 @@
 export default class Bullet{
-    constructor(pos, damage, speed, target){
+    constructor(pos, damage, target){
         this.pos = pos;
         this.damage = damage;
-        this.speed = speed;
+        this.SPEED = 5;
         this.target = target;
-        this.radius = 1;
+        this.r = 5;
     }
     render(canvas){
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = 'orange';
         ctx.beginPath();
-        ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+        ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
         ctx.fill();
+    }
+    update(canvas){
+        this.render(canvas);
+        const angle = Math.atan2(this.target.center.y - this.pos.y, this.target.center.x - this.pos.x);
+        this.pos.x += this.SPEED * Math.cos(angle);
+        this.pos.y += this.SPEED * Math.sin(angle);
     }
 
 }

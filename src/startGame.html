@@ -1,85 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Game with History API</title>
-    <link rel="stylesheet" href="css/startgame.css" />
-  </head>
-  <body>
-    <div id="startPage" class="page">
-      <h1>Welcome to the Game</h1>
-      <div class="form-container">
-        <label class="custom-checkbox">
-          <input type="checkbox" id="checkbox" />
-          <span class="checkmark"></span>
-          Enable Audio
-        </label>
-      </div>
-      <div class="tutorial">
-        <h2>How to Play</h2>
-        <p>
-          Welcome to our exciting game! Here’s a brief tutorial to get you
-          started:
-        </p>
-        <ul>
-          <li>Use the arrow keys to move your character.</li>
-          <li>Collect coins to increase your score.</li>
-          <li>Avoid obstacles to stay alive.</li>
-          <li>Press the spacebar to jump.</li>
-        </ul>
-      </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game SPA</title>
+    <link rel="stylesheet" href="css/startgame.css">
+    <script src="script.js" defer></script>
+
+</head>
+<body>
+    <div id="loader-page" class="page">
+        <h1>Loading...</h1>
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-      <radialGradient
-        id="a11"
-        cx=".66"
-        fx=".66"
-        cy=".3125"
-        fy=".3125"
-        gradientTransform="scale(1.5)"
-      >
-        <stop offset="0" stop-color="#FF156D"></stop>
-        <stop offset=".3" stop-color="#FF156D" stop-opacity=".9"></stop>
-        <stop offset=".6" stop-color="#FF156D" stop-opacity=".6"></stop>
-        <stop offset=".8" stop-color="#FF156D" stop-opacity=".3"></stop>
-        <stop offset="1" stop-color="#FF156D" stop-opacity="0"></stop>
-      </radialGradient>
-      <circle
-        transform-origin="center"
-        fill="none"
-        stroke="url(#a11)"
-        stroke-width="15"
-        stroke-linecap="round"
-        stroke-dasharray="200 1000"
-        stroke-dashoffset="0"
-        cx="100"
-        cy="100"
-        r="70"
-      >
-        <animateTransform
-          type="rotate"
-          attributeName="transform"
-          calcMode="spline"
-          dur="2"
-          values="360;0"
-          keyTimes="0;1"
-          keySplines="0 0 1 1"
-          repeatCount="indefinite"
-        ></animateTransform>
-      </circle>
-      <circle
-        transform-origin="center"
-        fill="none"
-        opacity=".2"
-        stroke="#FF156D"
-        stroke-width="15"
-        stroke-linecap="round"
-        cx="100"
-        cy="100"
-        r="70"
-      ></circle>
-    </svg>
-    
-  </body>
+    <div id="start-page" class="page hidden">
+        <h1>Welcome to the Game</h1>
+        <button id="start-button">Start Game</button>
+    </div>
+    <div id="game-canvas-page" class="page hidden">
+        <canvas id="game-canvas"></canvas>
+        <button id="back-button">Back to Start</button>
+    </div>
+</body>
 </html>

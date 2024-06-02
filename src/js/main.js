@@ -15,21 +15,21 @@ const towerStats = {
     basic: {
         range: 100,
         damage: 10,
-        speed: 1,
+        speed: 8,
         price: 10,
         color: 'red'
     },
     archer: {
         range: 50,
         damage: 5,
-        speed: 5,
+        speed: 10,
         price: 20,
         color: 'green'
     },
     cannon:{
         range: 150,
         damage: 20,
-        speed: 0.5,
+        speed: 5,
         price: 30,
         color: 'blue'
     },
@@ -41,18 +41,23 @@ const towerStats = {
         color: 'purple'
     }
 }
-
-const startPage = document.getElementById('start-page');
+function navigateToPage(pageId, pushState = false) {
+    if(pushState)
+        history.pushState({ page: pageId }, null, `#${pageId}`);
+    const page = document.getElementById(pageId);
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(p =>{
+        p.style.display = 'none';
+    });
+    page.style.display = 'flex';
+}
 const startForm = document.getElementById('start-game-form');
 startForm.addEventListener('submit', (e) =>{
     e.preventDefault();
     const nameField = document.getElementById('player-name');
     const audioField = document.getElementById('audio');
-    const loadingPage = document.getElementById('loading-page');
-    loadingPage.style.display = 'block';
-    startPage.style.display = 'none';
+    navigateToPage('loading-page');
     setTimeout(() =>{
-        loadingPage.style.display = 'none';
         loadGame();
     }, 2000);
 });
@@ -64,9 +69,18 @@ showTutorialBtn.addEventListener('click', (e) =>{
     videoTutorial.style.display = 'block';
 });
 
+window.addEventListener('popstate', (e) =>{
+    console.log(e);
+    if(e.state && e.state.page){
+        if(e.state.page === 'game-page', true){
+            navigateToPage('start-page');
+        }
+    }else{
+        navigateToPage('start-page');
+    }
+});
 
 const towers = document.querySelectorAll('.tower');
-
 for(let tower of towers){
     const color = towerStats[tower.dataset.towerType].color;
     tower.style.backgroundColor = color;
@@ -88,9 +102,7 @@ for(let tower of towers){
    
 }
 function loadGame(){
-    const gameContainer = document.getElementById('game-container');
-    gameContainer.style.display = 'flex';
-
+    navigateToPage('game-page', true);
     const game = new Game(pathPoints);
     game.init();
 
@@ -108,8 +120,7 @@ function loadGame(){
     resetBtn.addEventListener('click', e => game.reset());
 
     backToMenu.addEventListener('click', e =>{
-        gameContainer.style.display = 'none';
-        startPage.style.display = 'flex';
+        navigateToPage('start-page');
     });
 
 
@@ -143,6 +154,7 @@ function loadGame(){
     })
 
 }
+
 
 
 
