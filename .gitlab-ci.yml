@@ -1,0 +1,15 @@
+image: alpine:latest
+
+pages:
+  stage: deploy
+  script:
+    - mkdir test
+    - mv public/* test
+    - rm -rf public
+    - mkdir public
+    - mv test/* public
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
